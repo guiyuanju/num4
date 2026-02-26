@@ -21,7 +21,7 @@ jobs:
 
       - name: Compile Java
         run: |
-          javac NumberGroupGenerator.java
+          javac -encoding UTF-8 NumberGroupGenerator.java
           jar cfe NumberGroupGenerator.jar NumberGroupGenerator NumberGroupGenerator.class
 
       - name: Package EXE
