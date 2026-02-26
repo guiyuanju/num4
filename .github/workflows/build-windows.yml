@@ -11,31 +11,29 @@ jobs:
     runs-on: windows-latest
 
     steps:
+      # 1. Checkout 仓库
       - uses: actions/checkout@v3
 
+      # 2. 设置 JDK（Windows Runner 默认联网安装 Temurin）
       - name: Setup JDK
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
 
+      # 3. 编译 Java（UTF-8 编码，防止中文报错）
       - name: Compile Java
         run: |
           javac -encoding UTF-8 NumberGroupGenerator.java
           jar cfe NumberGroupGenerator.jar NumberGroupGenerator NumberGroupGenerator.class
 
+      # 4. 打包 exe（捆绑 JRE，单行 PowerShell 命令）
       - name: Package EXE
         run: |
           mkdir output
-          jpackage ^
-            --name NumberGroupGenerator ^
-            --input . ^
-            --main-jar NumberGroupGenerator.jar ^
-            --main-class NumberGroupGenerator ^
-            --type exe ^
-            --dest output ^
-            --runtime-image "%JAVA_HOME%"
+          jpackage --name NumberGroupGenerator --input . --main-jar NumberGroupGenerator.jar --main-class NumberGroupGenerator --type exe --dest output --runtime-image "%JAVA_HOME%"
 
+      # 5. 上传生成的 exe
       - name: Upload EXE
         uses: actions/upload-artifact@v4
         with:
