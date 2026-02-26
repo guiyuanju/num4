@@ -1,0 +1,49 @@
+name: Build Windows Java EXE
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      # 1. Checkout code
+      - uses: actions/checkout@v3
+
+      # 2. Set up JDK (可以用离线 zip 安装，不联网)
+      - name: Setup JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+          # 如果不能联网，可以提前把 JDK 放到仓库，并改成 local 安装方式
+
+      # 3. Compile Java
+      - name: Compile Java
+        run: |
+          javac NumberGroupGenerator.java
+          jar cfe NumberGroupGenerator.jar NumberGroupGenerator NumberGroupGenerator.class
+
+      # 4. Bundle EXE using jpackage
+      - name: Package EXE
+        run: |
+          mkdir output
+          jpackage ^
+            --name NumberGroupGenerator ^
+            --input . ^
+            --main-jar NumberGroupGenerator.jar ^
+            --main-class NumberGroupGenerator ^
+            --type exe ^
+            --dest output ^
+            --runtime-image "%JAVA_HOME%"  # 使用 JDK 自带 jlink 生成的 runtime
+
+      # 5. Upload artifact
+      - name: Upload EXE
+        uses: actions/upload-artifact@v3
+        with:
+          name: NumberGroupGenerator-windows
+          path: output/
