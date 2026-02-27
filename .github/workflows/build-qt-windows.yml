@@ -23,13 +23,13 @@ jobs:
         version: '5.15.2'
         host: 'windows'
         target: 'desktop'
-        arch: 'win32_msvc2019'
+        arch: 'win64_msvc2019_64'
         cache: true
     
     - name: Set up MSVC
       uses: ilammy/msvc-dev-cmd@v1
       with:
-        arch: x86
+        arch: x64
     
     - name: Install Ninja
       run: choco install ninja
@@ -52,19 +52,19 @@ jobs:
     
     - name: Create portable zip
       run: |
-        Compress-Archive -Path deploy\* -DestinationPath NumberGroupGenerator-Qt-Win32.zip
+        Compress-Archive -Path deploy\* -DestinationPath NumberGroupGenerator-Qt-Win64.zip
     
     - name: Upload portable app
       uses: actions/upload-artifact@v4
       with:
-        name: qt-windows-x86-portable
-        path: NumberGroupGenerator-Qt-Win32.zip
+        name: qt-windows-x64-portable
+        path: NumberGroupGenerator-Qt-Win64.zip
     
     - name: Create Release
       if: startsWith(github.ref, 'refs/tags/')
       uses: softprops/action-gh-release@v1
       with:
-        files: NumberGroupGenerator-Qt-Win32.zip
+        files: NumberGroupGenerator-Qt-Win64.zip
         generate_release_notes: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
