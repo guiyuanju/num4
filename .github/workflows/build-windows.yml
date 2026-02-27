@@ -1,41 +1,59 @@
-name: Build Windows Java EXE
+name: Build Windows x86 Application
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
 
 jobs:
-  build-windows:
+  build:
     runs-on: windows-latest
-
+    
     steps:
-      # 1. Checkout 仓库
-      - uses: actions/checkout@v3
-
-      # 2. 设置 JDK
-      - name: Setup JDK
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 17
-
-      # 3. 编译 Java（UTF-8 编码，避免中文报错）
-      - name: Compile Java
-        run: |
-          javac -encoding UTF-8 NumberGroupGenerator.java
-          jar cfe NumberGroupGenerator.jar NumberGroupGenerator NumberGroupGenerator.class
-
-      # 4. 打包 exe（独立运行，目标 Windows 不需要 Java）
-      - name: Package EXE
-        run: |
-          mkdir output
-          jpackage --name NumberGroupGenerator --input . --main-jar NumberGroupGenerator.jar --main-class NumberGroupGenerator --type exe --dest output
-
-      # 5. 上传生成的 exe
-      - name: Upload EXE
-        uses: actions/upload-artifact@v4
-        with:
-          name: NumberGroupGenerator-windows
-          path: output/
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        architecture: 'x86'
+    
+    - name: Compile Java application
+      run: |
+        javac NumberGroupGenerator.java
+    
+    - name: Create JAR with manifest
+      run: |
+        echo "Main-Class: NumberGroupGenerator" > manifest.txt
+        jar cvfm NumberGroupGenerator.jar manifest.txt NumberGroupGenerator*.class
+    
+    - name: Create Windows installer with jpackage
+      run: |
+        jpackage `
+          --input . `
+          --name "NumberGroupGenerator" `
+          --main-jar NumberGroupGenerator.jar `
+          --main-class NumberGroupGenerator `
+          --type exe `
+          --win-console `
+          --app-version "1.0.0" `
+          --vendor "Your Name" `
+          --description "Number Group Generator Application" `
+          --dest dist
+    
+    - name: Upload Windows installer
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-x86-installer
+        path: dist/*.exe
+        if-no-files-found: error
+    
+    - name: Upload JAR file
+      uses: actions/upload-artifact@v4
+      with:
+        name: jar-file
+        path: NumberGroupGenerator.jar
