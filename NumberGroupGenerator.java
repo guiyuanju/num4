@@ -19,8 +19,8 @@ public class NumberGroupGenerator {
             if (!l.isEmpty()) lines.add(l);
         }
 
-        if (m <= 1) throw new Exception("M must > 1");
-        if (lines.size() % m != 0) throw new Exception("line count must be multiple of M");
+        if (m <= 1) throw new Exception("每组行数应当大于1");
+        if (lines.size() % m != 0) throw new Exception("总行数应当是每组行数的倍数");
 
         List<String> result = new ArrayList<>();
         for (int i = 0; i < lines.size(); i += m) {
@@ -133,7 +133,7 @@ public class NumberGroupGenerator {
                 try {
                     m = Integer.parseInt(mEntry.getText().trim());
                 } catch (NumberFormatException ex) {
-                    outputBox.setText("invalid M");
+                    outputBox.setText("请输入每组行数");
                     return;
                 }
 
