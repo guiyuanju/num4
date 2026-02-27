@@ -121,9 +121,9 @@ public class NumberGroupGenerator {
             controlBar.add(mLabel);
             controlBar.add(mEntry);
             controlBar.add(Box.createHorizontalGlue());
+            controlBar.add(generateBtn);
             controlBar.add(copyBtn);
             controlBar.add(clearBtn);
-            controlBar.add(generateBtn);
 
             central.add(controlBar, BorderLayout.SOUTH);
 
