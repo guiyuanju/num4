@@ -3,3 +3,4 @@ jdeploy-bundle
 *.jar
 *.class
 build/*
+target/*
