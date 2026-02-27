@@ -24,7 +24,7 @@ jobs:
     
     - name: Compile Java application
       run: |
-        javac NumberGroupGenerator.java
+        javac -encoding UTF-8 NumberGroupGenerator.java
     
     - name: Create JAR with manifest
       run: |
