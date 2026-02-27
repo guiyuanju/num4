@@ -47,12 +47,36 @@ jobs:
           --description "Number Group Generator Application" `
           --dest dist
     
+    - name: Create portable app (no installation required)
+      run: |
+        jpackage `
+          --input . `
+          --name "NumberGroupGenerator" `
+          --main-jar NumberGroupGenerator.jar `
+          --main-class NumberGroupGenerator `
+          --type app-image `
+          --win-console `
+          --app-version "1.0.0" `
+          --vendor "Your Name" `
+          --description "Number Group Generator Application" `
+          --dest portable
+    
+    - name: Create portable app zip
+      run: |
+        Compress-Archive -Path portable\NumberGroupGenerator -DestinationPath NumberGroupGenerator-Portable-x86.zip
+    
     - name: Upload Windows installer
       uses: actions/upload-artifact@v4
       with:
         name: windows-x86-installer
         path: dist/*.msi
         if-no-files-found: error
+    
+    - name: Upload portable app
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-x86-portable
+        path: NumberGroupGenerator-Portable-x86.zip
     
     - name: Upload JAR file
       uses: actions/upload-artifact@v4
@@ -66,6 +90,7 @@ jobs:
       with:
         files: |
           dist/*.msi
+          NumberGroupGenerator-Portable-x86.zip
           NumberGroupGenerator.jar
         generate_release_notes: true
       env:
