@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^mkdir -p build && cd build && cmake \\.\\. -DCMAKE_BUILD_TYPE=Release$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

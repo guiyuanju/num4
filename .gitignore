@@ -2,3 +2,4 @@ jdeploy
 jdeploy-bundle
 *.jar
 *.class
+build/*
