@@ -49,21 +49,22 @@ jobs:
     
     - name: Create portable app (no installation required)
       run: |
+        New-Item -ItemType Directory -Force -Path C:\pkg
+        Copy-Item NumberGroupGenerator.jar C:\pkg\
         jpackage `
-          --input . `
+          --input C:\pkg `
           --name "NumberGroupGenerator" `
           --main-jar NumberGroupGenerator.jar `
           --main-class NumberGroupGenerator `
           --type app-image `
-          --win-console `
           --app-version "1.0.0" `
           --vendor "Your Name" `
           --description "Number Group Generator Application" `
-          --dest portable
+          --dest C:\out
     
     - name: Create portable app zip
       run: |
-        Compress-Archive -Path portable\NumberGroupGenerator -DestinationPath NumberGroupGenerator-Portable-x86.zip
+        Compress-Archive -Path C:\out\NumberGroupGenerator -DestinationPath NumberGroupGenerator-Portable-x86.zip
     
     # - name: Upload Windows installer
     #   uses: actions/upload-artifact@v4
